@@ -8,6 +8,7 @@ import "C"
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"syscall"
 )
@@ -30,7 +31,15 @@ type RingBuffer struct {
 func (rb *RingBuffer) Poll(timeout int) {
 	rb.stop = make(chan struct{})
 	rb.wg.Add(1)
-	go rb.poll(timeout)
+	go func() {
+		err := rb.poll(timeout)
+		if err != nil {
+			log.Printf("Error polling ring buffer: %v", err)
+			if !rb.isStopped() {
+				rb.Stop()
+			}
+		}
+	}()
 }
 
 // Deprecated: use RingBuffer.Poll() instead.
