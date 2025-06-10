@@ -44,6 +44,13 @@ func (rb *UserRingBuffer) Start() {
 	}()
 }
 
+func (rb *UserRingBuffer) Submit(b []byte) error {
+	if err := rb.submit(b); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (rb *UserRingBuffer) Error() error {
 	select {
 	case err := <-rb.errChan:
