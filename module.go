@@ -210,24 +210,16 @@ func (m *Module) BPFLoadObject() error {
 		return fmt.Errorf("failed to load BPF object: %w", syscall.Errno(-retC))
 	}
 	m.loaded = true
-	m.elf.Close()
-	m.elf = nil
-
-	return nil
-}
-
-func (m *Module) BPFLoadExistedObject(obj unsafe.Pointer) error {
-	m.obj = (*C.struct_bpf_object)(obj)
-	retC := C.bpf_object__load(m.obj)
-	if retC < 0 {
-		return fmt.Errorf("failed to load BPF object: %w", syscall.Errno(-retC))
-	}
-	m.loaded = true
 	if m.elf != nil {
 		m.elf.Close()
 		m.elf = nil
 	}
 
+	return nil
+}
+
+func (m *Module) BPFReplaceExistedObject(obj unsafe.Pointer) error {
+	m.obj = (*C.struct_bpf_object)(obj)
 	return nil
 }
 
