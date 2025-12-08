@@ -935,7 +935,6 @@ func (p *BPFProg) Run(opts *RunOpts) error {
 		return err
 	}
 	defer C.cgo_bpf_test_run_opts_free(optsC)
-
 	retC := C.bpf_prog_test_run_opts(C.int(p.FileDescriptor()), optsC)
 	if retC < 0 {
 		return fmt.Errorf("failed to run program: %w", syscall.Errno(-retC))

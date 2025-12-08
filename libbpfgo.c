@@ -605,3 +605,16 @@ void cgo_bpf_xdp_attach_opts_free(struct bpf_xdp_attach_opts *opts)
 {
     free(opts);
 }
+
+int cgo_user_ring_buffer__reserve_submit(struct user_ring_buffer *rb, void *data, __u32 size)
+{
+    void *entry;
+
+    entry = user_ring_buffer__reserve(rb, size);
+    if (!entry)
+        return -errno;
+
+    memcpy(entry, data, size);
+    user_ring_buffer__submit(rb, entry);
+    return 0;
+}

@@ -61,14 +61,10 @@ func (rb *UserRingBuffer) Error() error {
 }
 
 func (rb *UserRingBuffer) submit(b []byte) error {
-	bSizeC := C.size_t(len(b))
-	entry, errno := C.user_ring_buffer__reserve(rb.rb, C.uint(bSizeC))
-	if entry == nil {
-		return fmt.Errorf("user_ring_buffer__reserve failed: %v", errno)
+	ret := C.cgo_user_ring_buffer__reserve_submit(rb.rb, unsafe.Pointer(&b[0]), C.uint(len(b)))
+	if ret < 0 {
+		return fmt.Errorf("user_ring_buffer reserve/submit failed: %d", ret)
 	}
-
-	C.memcpy(entry, unsafe.Pointer(&b[0]), bSizeC)
-	C.user_ring_buffer__submit(rb.rb, entry)
 	return nil
 }
 

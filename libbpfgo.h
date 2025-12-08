@@ -139,4 +139,8 @@ __u32 cgo_bpf_tc_opts_priority(struct bpf_tc_opts *opts);
 struct bpf_xdp_attach_opts *cgo_bpf_xdp_attach_opts_new(__u32 fd);
 void cgo_bpf_xdp_attach_opts_free(struct bpf_xdp_attach_opts *opts);
 
+// user_ring_buffer helpers
+
+int cgo_user_ring_buffer__reserve_submit(struct user_ring_buffer *rb, void *data, __u32 size);
+
 #endif
